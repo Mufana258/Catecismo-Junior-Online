@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "catecismojunioronline"
+  },
+  "targets": {
+    "catecismojunioronline": {
+      "hosting": {
+        "app": [
+          "catecismojunioronline"
+        ]
+      }
+    }
+  }
+}
