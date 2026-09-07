@@ -74,17 +74,15 @@ function fetchPage(port, urlPath = "/") {
 }
 
 async function main() {
-  const publicDir = path.resolve(".output/public");
+  const publicDir = path.resolve("dist/client");
   const distDir = path.resolve("dist");
-  const serverEntry = path.resolve(".output/server/index.mjs");
+  const serverEntry = path.resolve("dist/server/server.js");
 
-  // Clean dist/ first to avoid stale files from previous builds
-  if (fs.existsSync(distDir)) {
-    fs.rmSync(distDir, { recursive: true, force: true });
-    console.log(`Cleaned old dist directory: ${distDir}`);
+  if (!fs.existsSync(publicDir)) {
+    throw new Error(`Client build output not found: ${publicDir}`);
   }
 
-  // Copy .output/public files to dist
+  // Vite writes client assets under dist/client; Vercel serves the configured dist root.
   console.log(`Copying static assets from ${publicDir} to ${distDir}...`);
   copyFolderRecursiveSync(publicDir, distDir);
 
@@ -136,7 +134,6 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error("Warning in generate-html script:", err);
-  // Guarantee exit code 0 so build never fails
-  process.exit(0);
+  console.error("Failed to generate deployment HTML:", err);
+  process.exitCode = 1;
 });
